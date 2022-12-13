@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <form action="">
+
+        <label for="nazov">Názov filmu: </label>
+        <input type="nazov" id="nazov">
+        <label for="rok">Rok vydania: </label>
+        <input type="rok" id="rok">
+        <label for="postava">Hlavná postava: </label>
+        <input type="postava" id="postava">
+
+        <button onclick="vlozPolozku(event)">Vložiť</button>
+        <button onclick="vymazaniePola()">Vymazať všetko</button>
+
+    </form>
+
+    <div id="zobrazenie"></div>
+
+    <script>
+
+        let movies = JSON.parse(localStorage.getItem("movies"));
+
+        if(movies === null){
+            movies = [];
+        }
+
+        let nazovFilmu = document.getElementById("nazov");
+        let rokVydania = document.getElementById("rok");
+        let hlavnaPostava = document.getElementById("postava");
+
+        let zobrazenie = document.getElementById("zobrazenie");
+
+
+        for(let i = 0; i < movies.length; i++){
+
+            let p = document.createElement("p");
+                
+            p.innerText = "Film: " + movies[i].nazov + ", Rok vydania: " + movies[i].rok + ", Hlavná postava: " + movies[i].postava + " ";
+
+            let button = document.createElement("button");
+
+            button.innerText = "Vymaž tento film";
+            button.onclick = function(){odstranPolozku(i)};
+
+            p.append(button);
+
+            zobrazenie.append(p);
+        }
+
+        function vlozPolozku(event){
+
+            event.preventDefault();
+
+            movies.push({film: nazovFilmu.value, rok: rokVydania.value, postava: hlavnaPostava.value});
+
+            localStorage.setItem("movies", JSON.stringify(movies));
+
+            console.log(movies)
+
+            let p = document.createElement("p");
+                
+            p.innerText = "Film: " + nazovFilmu.value + ", Rok vydania: " + rokVydania.value + ", Hlavná postava: " + hlavnaPostava.value + " ";
+
+            let button = document.createElement("button");
+
+            button.innerText = "Vymaž tento film";
+            button.onclick = function(){odstranPolozku(movies.length - 1)};
+
+            p.append(button);
+
+            zobrazenie.append(p);
+
+            //vypis aktualneho zoznamu
+            console.log("***Akutalny zoznam filmov***");
+
+            console.log(movies);
+
+        }
+
+        function odstranPolozku(poradoveCislo){
+
+            //vymazanie z pola
+            movies.splice(poradoveCislo, 1);
+
+            //vymazanie z HTML
+            zobrazenie.childNodes[poradoveCislo].remove();
+
+            localStorage.setItem("movies", JSON.stringify(movies));
+
+            //vypis aktualneho zoznamu
+            console.log("***Akutalny zoznam filmov***");
+
+            console.log(movies);
+        }
+
+        function vymazaniePola(){
+            // vymazanie pola
+            movies = [];
+
+            console.log(movies);
+
+            //vymazanie z HTML
+            document.getElementById("zobrazenie").innerHTML = "";
+
+            //update localstorage (!!!)
+            localStorage.setItem("movies", JSON.stringify(movies));
+        }
+
+        console.log("***Akutalny zoznam filmov***");
+
+        console.log(movies);
+
+    </script>
+    
+</body>
+</html>
